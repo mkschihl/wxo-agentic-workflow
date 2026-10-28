@@ -1,0 +1,243 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GSA MKS Hackathon — Session Summary</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1f2328;
+    background: #ffffff;
+    padding: 32px 16px 48px;
+  }
+  .page { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #57606a; font-size: 13px; margin-bottom: 32px; }
+  h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #57606a;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 6px;
+    margin: 28px 0 14px;
+  }
+  h3 { font-size: 14px; font-weight: 600; margin: 16px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { padding-left: 20px; margin-bottom: 10px; }
+  li { margin-bottom: 4px; }
+  code {
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    font-size: 12px;
+    background: #f7f8fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+  pre {
+    background: #f7f8fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    padding: 12px 14px;
+    font-size: 12px;
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    overflow-x: auto;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .card {
+    background: #f7f8fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .card-title { font-weight: 600; margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 13px; }
+  th { background: #f7f8fa; border: 1px solid #e5e7eb; padding: 7px 10px; text-align: left; font-weight: 600; }
+  td { border: 1px solid #e5e7eb; padding: 7px 10px; vertical-align: top; }
+  .pass { color: #1a7f37; font-weight: 600; }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 10px;
+    margin-right: 4px;
+  }
+  .tag-blue  { background: #dbeafe; color: #1e40af; }
+  .tag-green { background: #dcfce7; color: #166534; }
+  .tag-gray  { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+  .accent { color: #3b82d4; }
+  .muted { color: #57606a; }
+  .divider { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+  footer {
+    margin-top: 40px;
+    padding-top: 14px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 12px;
+    color: #57606a;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>GSA MKS Hackathon — Session Summary</h1>
+  <p class="subtitle">What you built, what you learned, and what context the next session needs</p>
+
+  
+  <h2>What You Built</h2>
+
+  <div class="card">
+    <div class="card-title">Local stdio MCP Toolkit — <code>gsa_mks_tools</code></div>
+    <pre>toolkits/gsa_mks_tools/
+├── server.py        ← FastMCP server (all 3 tools, stdio transport)
+├── requirements.txt ← fastmcp, httpx, pydantic
+├── toolkit.yaml     ← Orchestrate import spec
+└── test_local.py    ← standalone local test script</pre>
+    <ul>
+      <li><strong>gsa_mks_get_current_weather</strong> — live weather via wttr.in (proves outbound internet)</li>
+      <li><strong>gsa_mks_get_programming_joke</strong> — random joke via Official Joke API</li>
+      <li><strong>gsa_mks_convert_units</strong> — temperature, distance, mass, volume (pure local math)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Native Agent — <code>gsa_mks_agent</code></div>
+    <pre>agents/gsa_mks_agent.yaml</pre>
+    <ul>
+      <li>LLM: <code>groq/openai/gpt-oss-120b</code>, style: <code>react_core</code></li>
+      <li>All three toolkit tools attached via <code>gsa_mks_tools:gsa_mks_*</code> names</li>
+      <li>Instructions include explicit tool-selection rules so the LLM never guesses</li>
+    </ul>
+  </div>
+
+  <h3>Test Results — 3/3 <span class="pass">✓</span></h3>
+  <table>
+    <tr><th>Prompt</th><th>Tool fired</th><th>Response</th><th>Result</th></tr>
+    <tr><td>Weather in Tokyo?</td><td><code>get_current_weather</code></td><td>Clear, 21°C / 70°F, 69% humidity</td><td class="pass">Pass</td></tr>
+    <tr><td>Tell me a programming joke</td><td><code>get_programming_joke</code></td><td>"Why don't .NET devs wear glasses? Because they see sharp."</td><td class="pass">Pass</td></tr>
+    <tr><td>Convert 100 km to miles</td><td><code>convert_units</code></td><td>62.14 miles</td><td class="pass">Pass</td></tr>
+  </table>
+
+  <hr class="divider" />
+
+  
+  <h2>What You Learned</h2>
+
+  <h3>1. The three-layer naming system</h3>
+  <p>The <code>orchestrate</code> CLI subcommands (<code>toolkits</code>, <code>tools</code>, <code>agents</code>) are fixed keywords built into IBM's ADK — they have nothing to do with your folder names. Your folder structure is just convention. The only name Orchestrate actually reads is the <code>name:</code> field inside your YAML file.</p>
+
+  <h3>2. Two completely different tool patterns</h3>
+  <table>
+    <tr><th></th><th>FastMCP <code>@mcp.tool</code> (what you built)</th><th>ADK <code>@tool</code></th></tr>
+    <tr><td>Registered as</td><td>Toolkit (a process)</td><td>Tool (a function)</td></tr>
+    <tr><td>How Orchestrate runs it</td><td>Starts <code>python server.py</code> over stdio</td><td>Calls the function directly</td></tr>
+    <tr><td>Import command</td><td><code>orchestrate toolkits import</code></td><td><code>orchestrate tools import -k python</code></td></tr>
+    <tr><td>Good for</td><td>Grouping tools, any Python library</td><td>Single-purpose tools, simpler setup</td></tr>
+  </table>
+
+  <h3>3. How stdio transport works</h3>
+  <p>Orchestrate starts <code>python server.py</code> as a subprocess and pipes JSON-RPC messages through its stdin/stdout. You never see a URL or port. The process is started <em>by</em> Orchestrate on demand — you don't run it yourself.</p>
+
+  <h3>4. How <code>package_root</code> works</h3>
+  <p>When you import a toolkit, Orchestrate uploads everything in <code>package_root</code>, runs <code>pip install -r requirements.txt</code>, then executes <code>command</code>. That's why the layout must be flat — no <code>src/</code> nesting. Use an absolute path for <code>package_root</code> to avoid path-doubling bugs.</p>
+
+  <h3>5. Token vs. API key — and why tokens expire</h3>
+  <p><code>read -s WXO_API_KEY</code> reads your key silently into memory. <code>orchestrate env activate</code> exchanges it for a short-lived session token stored on disk. <code>unset WXO_API_KEY</code> immediately erases it from memory. Tokens expire after a few hours — that's a security feature, not a bug.</p>
+
+  <h3>6. The docstring IS the tool description</h3>
+  <p>FastMCP reads your Python function's docstring at import time and reports it to Orchestrate via the MCP protocol. That's what fills the Description column in <code>orchestrate tools list</code>. Write clear docstrings — the LLM reads them to decide which tool to call.</p>
+
+  <h3>7. The <code>orchestrate chat ask</code> EOF quirk</h3>
+  <p>On SaaS, <code>orchestrate chat ask</code> opens an interactive session. When run non-interactively (from a script), it floods output with <code>EOF when reading a line</code> errors <em>after</em> delivering the response. The agent response above the EOF flood is real and correct — ignore everything below it.</p>
+
+  <hr class="divider" />
+
+  
+  <h2>Context the Next Agent Will Need</h2>
+
+  <div class="card">
+    <div class="card-title">Environment facts</div>
+    <ul>
+      <li>Workspace: <code>/home/itzuser/wxo-agentic-workflow/</code></li>
+      <li>Venv: <code>./venv/</code> — Python 3.12, ADK v2.19.0, FastMCP 4.1.3</li>
+      <li>Active Orchestrate env: <code>gsa-hackathon</code> (IBM Cloud Toronto, <code>ca-tor</code> region)</li>
+      <li>Token expires every few hours — re-activate with <code>orchestrate env activate gsa-hackathon --api-key "$WXO_API_KEY"</code></li>
+      <li>Symlink at <code>./mcp-hackathon-template/</code> → <code>/home/itzuser/mcp-hackathon-template</code> (the GSA hackathon reference template)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">What already exists in Orchestrate</div>
+    <ul>
+      <li>Toolkit: <code>gsa_mks_tools</code> — all three tools registered</li>
+      <li>Agent: <code>gsa_mks_agent</code> — native, react_core, all three tools attached</li>
+      <li>Shared environment also contains: <code>gsa_gdp_tools</code>, <code>gsa-mcp-server</code> (other participants)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Workspace structure (what matters)</div>
+    <pre>wxo-agentic-workflow/
+├── toolkits/gsa_mks_tools/   ← your MCP toolkit (server.py, toolkit.yaml, etc.)
+├── agents/gsa_mks_agent.yaml ← your agent
+├── gsa-mks-tools-plan.md     ← the plan file from this session
+└── mcp-hackathon-template/   ← symlink to GSA reference template</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Key decisions made this session</div>
+    <ul>
+      <li>Used FastMCP (not ADK <code>@tool</code>) because the lab targets the MCP toolkit path</li>
+      <li>Single flat <code>server.py</code> (not multi-file) to match the lab's expected package shape</li>
+      <li><code>package_root</code> uses an absolute path — relative paths cause path-doubling</li>
+      <li>Tool names use the format <code>gsa_mks_tools:gsa_mks_*</code> in agent YAML (toolkit:tool)</li>
+      <li>FastMCP 4.1.3 was installed into the existing venv (was not pre-installed)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">What to tell the next agent to load</div>
+    <ul>
+      <li>Activate the <strong>wxo-builder</strong> skill — it contains the full ADK reference</li>
+      <li>Read <code>toolkits/gsa_mks_tools/server.py</code> to see the existing tool patterns</li>
+      <li>Read <code>agents/gsa_mks_agent.yaml</code> to see the agent structure</li>
+      <li>Read <code>mcp-hackathon-template/README.md</code> for the hackathon's deployment options</li>
+      <li>Check <code>orchestrate env list</code> first — if the token is expired, re-activate before doing anything</li>
+    </ul>
+  </div>
+
+  <hr class="divider" />
+
+  
+  <h2>What Real Work Looks Like From Here</h2>
+
+  <p>The lab gave you three deliberately simple tools to prove the pipeline works end-to-end. Real hackathon work means replacing or extending those tools with something that solves an actual problem. The same architecture applies — you're just changing what the tools do.</p>
+
+  <h3>The pattern that scales</h3>
+  <ul>
+    <li><strong>One MCP server</strong> (<code>server.py</code>) groups tools that belong together — e.g., all tools for a specific data source or API</li>
+    <li><strong>One agent</strong> per user-facing persona — it picks which tools to call based on the conversation</li>
+    <li><strong>Multi-agent</strong> (collaborators) for complex workflows — a routing agent that delegates to specialist agents</li>
+    <li><strong>Flows</strong> (<code>@flow</code> / ADK) for deterministic sequences — when you can draw a flowchart, use a flow instead of an agent</li>
+  </ul>
+
+  <h3>Questions worth answering before the next session</h3>
+  <ul>
+    <li>What data source or API do you want the next toolkit to wrap?</li>
+    <li>Is there a federal dataset, internal system, or external service you need to query?</li>
+    <li>What does a successful agent interaction look like — what question does a user ask, and what does a good answer look like?</li>
+  </ul>
+
+  <footer>Made with IBM Bob</footer>
+</div>
+</body>
+</html>

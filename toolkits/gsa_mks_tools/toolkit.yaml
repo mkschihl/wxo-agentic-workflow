@@ -1,0 +1,9 @@
+spec_version: v1
+kind: mcp
+name: gsa_mks_tools
+description: "GSA MKS toolkit: live weather (wttr.in), programming jokes, and unit conversion."
+command: python server.py
+env: []
+tools:
+  - "*"
+package_root: /home/itzuser/wxo-agentic-workflow/toolkits/gsa_mks_tools

@@ -1,0 +1,9 @@
+spec_version: v1
+kind: mcp
+name: sec_edgar_tools
+description: "SEC EDGAR toolkit: company lookup, filing history, and XBRL financial-statement facts from the SEC's public APIs."
+command: python server.py
+env: []
+tools:
+  - "*"
+package_root: /home/itzuser/wxo-agentic-workflow/toolkits/sec_edgar_tools

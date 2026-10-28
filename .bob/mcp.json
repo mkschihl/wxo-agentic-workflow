@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "watsonx-orchestrate-adk-docs": {
+      "command": "/home/itzuser/.local/bin/uvx",
+      "args": [
+        "mcp-proxy", "--transport", "streamablehttp",
+        "https://developer.watson-orchestrate.ibm.com/mcp"
+      ]
+    },
+    "watsonx-orchestrate-adk": {
+      "command": "/home/itzuser/.local/bin/uvx",
+      "args": ["ibm-watsonx-orchestrate-mcp-server"],
+      "env": {
+        "WXO_MCP_WORKING_DIRECTORY": "/home/itzuser/wxo-agentic-workflow"
+      },
+      "timeout": 300
+    }
+  }
+}
